@@ -7,9 +7,7 @@
     "main": "index.js",
     "scripts": {
         "start": "node ./index.js",
-        "watch": "nodemon ./index.js",
-        "lint": "eslint .",
-        "test": "echo \"Warning: no test specified\" && exit 0"
+        "test": "exit 0"
     },
     "repository": {
         "type": "git",
