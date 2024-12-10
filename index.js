@@ -78,6 +78,14 @@ server.post("/api/messages", async (req, res) => {
     await adapter.process(req, res, (context) => myBot.run(context));
 });
 
+// Health check endpoint
+server.get("/health", async (req, res) => {
+    res.json({
+        status: "healthy",
+        timestamp: new Date().toISOString(),
+    });
+});
+
 // Listen for Upgrade requests for Streaming.
 server.on("upgrade", async (req, socket, head) => {
     // Create an adapter scoped to this WebSocket connection to allow storing session data.
