@@ -1,9 +1,6 @@
 // const path = require("path");
-
-// const dotenv = require("dotenv");
-
 // const ENV_FILE = path.join(__dirname, ".env");
-// dotenv.config({path: ENV_FILE});
+// require("dotenv").config({path: ENV_FILE});
 
 const restify = require("restify");
 
@@ -16,18 +13,19 @@ const {
 } = require("botbuilder");
 
 // This bot's main dialog.
-const {EchoBot} = require("./bot");
+// const {EchoBot} = require("./bot");
+const {OpenAIBot} = require("./bot");
 
 // Create HTTP server
 const server = restify.createServer();
 server.use(restify.plugins.bodyParser());
 
-server.listen(process.env.port || process.env.PORT || 3978, () => {
+server.listen(process.env.PORT || 3978, () => {
     console.log(`\n${server.name} listening to ${server.url}`);
-    console.log(
-        "\nGet Bot Framework Emulator: https://aka.ms/botframework-emulator"
-    );
-    console.log('\nTo talk to your bot, open the emulator select "Open Bot"');
+    // console.log(
+    //     "\nGet Bot Framework Emulator: https://aka.ms/botframework-emulator"
+    // );
+    // console.log('\nTo talk to your bot, open the emulator select "Open Bot"');
 });
 
 const credentialsFactory = new ConfigurationServiceClientCredentialFactory({
@@ -46,12 +44,8 @@ const adapter = new CloudAdapter(botFrameworkAuthentication);
 
 // Catch-all for errors.
 const onTurnErrorHandler = async (context, error) => {
-    // This check writes out errors to console log .vs. app insights.
-    // NOTE: In production environment, you should consider logging this to Azure
-    //       application insights.
     console.error(`\n [onTurnError] unhandled error: ${error}`);
 
-    // Send a trace activity, which will be displayed in Bot Framework Emulator
     await context.sendTraceActivity(
         "OnTurnError Trace",
         `${error}`,
@@ -69,12 +63,11 @@ const onTurnErrorHandler = async (context, error) => {
 // Set the onTurnError for the singleton CloudAdapter.
 adapter.onTurnError = onTurnErrorHandler;
 
-// Create the main dialog.
-const myBot = new EchoBot();
+// const myBot = new EchoBot();
+const myBot = new OpenAIBot();
 
 // Listen for incoming requests.
 server.post("/api/messages", async (req, res) => {
-    // Route received a request to adapter for processing
     await adapter.process(req, res, (context) => myBot.run(context));
 });
 
